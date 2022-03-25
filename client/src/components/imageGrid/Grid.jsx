@@ -5,10 +5,10 @@ const Grid = (props) => {
   const [currentImage, setCurrentImage] = useState(false);
   return (
     <>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-4">
         {props.images.map((img) => (
           <div key={img.id}>
-            <img for="my-modal" class="modal-button" src={img.src} onClick={() => {
+            <img htmlFor="my-modal" className="modal-button" src={img.src} onClick={() => {
               setShowModal(true)
               setCurrentImage(img.src)
             }}/>
