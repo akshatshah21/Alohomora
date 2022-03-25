@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
-const register = require("./routes/register.js");
-
 require("dotenv").config();
 const DBURL = process.env.MONGODB_URL;
 const PORT = process.env.PORT;
+const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
+
+const register = require("./routes/register.js");
 
 //creating express app
 const app = express();
@@ -35,8 +36,19 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+// unsplash
+require("es6-promise").polyfill();
+require("isomorphic-fetch");
+const nodeFetch = require("node-fetch").nodeFetch;
+const createApi = require("unsplash-js").createApi;
+
+const unsplash = createApi({
+  accessKey: UNSPLASH_ACCESS_KEY,
+  fetch: nodeFetch,
+});
+
 //routes
-app.use("/api/register", register);
+app.use(require("./routes/index")(unsplash));
 
 //listen
 app.listen(PORT, () => console.log(`Server up and running on port ${PORT}`));
