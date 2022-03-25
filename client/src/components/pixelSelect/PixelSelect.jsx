@@ -57,7 +57,7 @@ function PixelSelect({
   }, [imageURL, dimension, selectionResolution]);
 
   return (
-    <div className="mx-auto flex flex-col">
+    <div className="mx-auto flex flex-col ">
       <span>
         Select a sequence of tiles. If you don't want this image or if you want
         to change your sequence, click the cross icon above.
