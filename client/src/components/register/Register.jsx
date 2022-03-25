@@ -1,6 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { ImageGrid } from "../imageGrid";
 import { createApi } from "unsplash-js";
+import CryptoJS from "crypto-js";
+import axios from "axios";
 
 const unsplash = createApi({
   accessKey: process.env.REACT_APP_UNSPLASH_ACCESS_KEY,
@@ -10,18 +12,24 @@ const unsplash = createApi({
 const NUM_TILES = 3;
 const NUM_ROUNDS = 3;
 
-// function hashImage(image, ref_point) {
-//   str = image + ref_point.join()
-//   return CryptoJS.SHA256(str).toString(CryptoJS.enc.base64)
-// };
+function hashImage(image, ref_point) {
+  const str = image + ref_point.join()
+  return CryptoJS.SHA256(str).toString(CryptoJS.enc.base64)
+};
+
+function encryptImage(image, key) {
+  return CryptoJS.AES.encrypt(image, key).toString();
+};
+
 
 function Register() {
   const [category, setCategory] = useState();
   const [rawImages, setRawImages] = useState([]);
   const [thumbnails, setThumbnails] = useState([]);
   const [sequences, setSequences] = useState([]);
-  const [imageNumber, setImageNumber] = useState(0);
-  
+  const [roundNumber, setRoundNumber] = useState(0);
+  const [firstRoundImages, setFirstRoundImages] = useState([]);
+
   const getImages = async () => {
     let fullImages = [];
     let thumbnails = [];
@@ -42,6 +50,10 @@ function Register() {
 
       setRawImages(fullImages);
       setThumbnails(thumbnails);
+
+      if(roundNumber === 0) {
+        setFirstRoundImages(fullImages);
+      }
     } catch (err) {
       console.error(err.message);
     }
@@ -55,14 +67,31 @@ function Register() {
         tileSequence: tileSequence,
       },
     ]);
-    setImageNumber(prev => prev + 1);
+    setRoundNumber(prev => prev + 1);
     setCategory("");
     setRawImages([]);
     setThumbnails([]);
   };
 
   const register = async() => {
+    const hashes = [];
+    sequences.map(imageSelection =>{
+      hashes.push(hashImage(imageSelection.image, imageSelection.tileSequence));
+    });
 
+    const encryptedImages = [];
+
+    for(let i=1; i<NUM_ROUNDS; i++) {
+      encryptedImages.push(encryptImage(sequences[i].image, hashes[i-1]));
+    }
+
+    const passwordHash = CryptoJS.SHA256(hashes.join()).toString(CryptoJS.enc.base64);
+
+    axios.post("/register", {
+      passwordHash,
+      encryptedImages,
+      firstRoundImages
+    });
   }
 
   return (
@@ -103,10 +132,10 @@ function Register() {
           </div>
         </form>
       </div>
-      {imageNumber === NUM_ROUNDS ? (
+      {roundNumber === NUM_ROUNDS ? (
         <div className="flex flex-col">
           <p className="mx-auto text-3xl my-2">Woo-hoo! You're almost there!</p>
-          <button className="btn btn-sm btn-primary mx-auto">Confirm registration</button>
+          <button className="btn btn-sm btn-primary mx-auto" onClick={register}>Confirm registration</button>
         </div>
       ) : (
         <ImageGrid
