@@ -37,7 +37,7 @@ const Grid = (props) => {
 
   const submitSequence = (seq) => console.log(seq);
 
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [currentImage, setCurrentImage] = useState(false);
 
   return (
