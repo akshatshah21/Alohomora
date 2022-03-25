@@ -8,6 +8,7 @@
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.26.1",
+    "buffer": "^6.0.3",
     "crypto-js": "^4.1.1",
     "daisyui": "^2.13.0",
     "framer-motion": "^6.2.8",
@@ -16,8 +17,13 @@
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",
     "react-image-crop": "^10.0.0",
+<<<<<<< HEAD
     "react-loading-skeleton": "^3.0.3",
+=======
+    "react-modal": "^3.14.4",
+>>>>>>> origin/captcha
     "react-scripts": "5.0.0",
+    "tesseract.js": "^2.1.5",
     "unsplash-js": "^7.0.15",
     "web-vitals": "^2.1.4"
   },
