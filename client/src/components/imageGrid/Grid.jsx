@@ -71,7 +71,7 @@ const Grid = (props) => {
                   initial={{ scale: 0 }}
                   animate={{ scale: 0.75 }}
                   transition={{
-                    duration: 1,
+                    duration: 0.75,
                   }}
                   whileHover={{ scale: 1 }}
                 />
@@ -79,13 +79,14 @@ const Grid = (props) => {
             </div>
           ))}
         </div>
+
         <AnimatePresence exitBeforeEnter>
           {showModal ? (
             <>
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
+                transition={{ duration: 0.75 }}
                 exit={{ opacity: 0 }}
                 className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
               >
@@ -97,7 +98,7 @@ const Grid = (props) => {
                         onClick={() => setShowModal(false)}
                       >
                         <motion.span className="h-6 w-6 text-3xl block text-red-700">
-                          x
+                          <XCircle /> 
                         </motion.span>
                       </motion.button>
                     </motion.div>

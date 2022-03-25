@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import { toast } from "react-toastify";
 
 function PixelSelect({
   imageURL,
@@ -57,7 +58,7 @@ function PixelSelect({
   }, [imageURL, dimension, selectionResolution]);
 
   return (
-    <div className="mx-auto flex flex-col ">
+    <div className="mx-auto flex flex-col">
       <span>
         Select a sequence of tiles. If you don't want this image or if you want
         to change your sequence, click the cross icon above.
@@ -67,11 +68,25 @@ function PixelSelect({
         className="grid grid-cols-5 gap-x-0 gap-y-2 w-96 mx-auto"
       ></div>
 
+      {/* btn-disabled is not working, but it's handled in submitSequence */}
       <button
         className={`btn w-1/4 my-4 mx-auto ${
-          selectedTiles.length === numTiles ? "disabled" : ""
+          selectedTiles.length === numTiles ? "btn-disabled" : ""
         }`}
         onClick={() => {
+          if (selectedTiles.current.length !== numTiles) {
+            console.log("Select more tiles");
+            toast.warn(`Select ${numTiles} tile(s)`, {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+            return;
+          }
           submitSequence(imageURL, selectedTiles.current);
           closeModal();
         }}

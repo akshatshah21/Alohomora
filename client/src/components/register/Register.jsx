@@ -3,6 +3,8 @@ import { ImageGrid } from "../imageGrid";
 import { createApi } from "unsplash-js";
 import CryptoJS from "crypto-js";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { navigate } from "@reach/router";
 
 const unsplash = createApi({
   accessKey: process.env.REACT_APP_UNSPLASH_ACCESS_KEY,
@@ -10,7 +12,7 @@ const unsplash = createApi({
 });
 
 const NUM_TILES = 1;
-const NUM_ROUNDS = 2;
+const NUM_ROUNDS = 4;
 
 function hashImage(image, ref_point) {
   const str = image + ref_point.join();
@@ -73,6 +75,17 @@ function Register() {
   };
 
   const register = async () => {
+    if (!name || !name.trim() || !email || !email.trim()) {
+      toast.warning("Please enter your details", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
     const hashes = [];
     sequences.map((imageSelection) => {
       hashes.push(hashImage(imageSelection.image, imageSelection.tileSequence));
@@ -88,19 +101,35 @@ function Register() {
       CryptoJS.enc.base64
     );
 
-    axios.post("/register", {
-      name,
-      email,
-      passwordHash,
-      images: [sequences[0].image, ...encryptedImages],
-    });
+    try {
+      let res = await axios.post("/register", {
+        name,
+        email,
+        passwordHash,
+        images: [sequences[0].image, ...encryptedImages],
+      });
+
+      if (res.status == 200) {
+        console.log("Registration successful");
+        toast.success("Registration successful!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate("/login");
+      }
+    } catch (error) {}
   };
 
   return (
     <Fragment>
       <div className="mx-auto my-2 font-light flex justify-center text-center">
         <form className="bg-white pt-6 w-2/3 flex justify-center">
-          <div className="mb-4">
+          <div className="mb-4 mr-2">
             <label className="text-gray-700 mb-2 text-lg" htmlFor="name">
               Name
             </label>
@@ -114,7 +143,7 @@ function Register() {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 mr-2">
             <label className="text-gray-700 mb-2 text-lg" htmlFor="email">
               Email
             </label>
@@ -129,7 +158,7 @@ function Register() {
             />
           </div>
 
-          <div className="mb-6">
+          <div className="mb-4 mr-2">
             <label className="text-gray-700 mb-2 text-lg" htmlFor="category">
               Category for image
             </label>
