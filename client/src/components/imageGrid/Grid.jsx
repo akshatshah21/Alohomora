@@ -87,7 +87,7 @@ const Grid = (props) => {
                       onClick={() => setShowModal(false)}
                     >
                       <span className="h-6 w-6 text-3xl block text-red-700">
-                        x
+                        <XCircle />
                       </span>
                     </button>
                   </div>

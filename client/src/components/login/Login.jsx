@@ -3,6 +3,7 @@ import axios from "axios";
 import { ImageGrid } from "../imageGrid";
 import CryptoJS from "crypto-js";
 import { toast } from "react-toastify";
+import { navigate } from "@reach/router";
 
 const NUM_TILES = 1;
 const NUM_ROUNDS = 4;
@@ -109,6 +110,7 @@ function Login() {
             draggable: true,
             progress: undefined,
             });
+            navigate("/authenticated");
         }
       } catch (err) {
         console.error(err);
