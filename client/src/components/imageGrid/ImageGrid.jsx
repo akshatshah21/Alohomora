@@ -1,29 +1,30 @@
-import React from 'react';
-import Grid from './Grid';
+import React from "react";
+import Grid from "./Grid";
 
 function ImageGrid(props) {
   const images = [];
   const thumbnailSide = 256;
 
-  const handleSubmit = () => {
-    
-  }
-
-  for(let i=0; i< props.imageURLs.length; i++) {
+  for (let i = 0; i < props.imageURLs.length; i++) {
     images.push({
-      id: i+1,
+      id: i + 1,
       src: props.imageURLs[i],
       thumbnail: props.thumbnails[i],
       thumbnailHeight: thumbnailSide,
-      thumbnailWidth: thumbnailSide
-    })
+      thumbnailWidth: thumbnailSide,
+    });
   }
 
   return (
     <div className="mx-8">
-      <Grid images={images}/>
+      <Grid
+        images={images}
+        addImageAndTileSequence={props.addImageAndTileSequence}
+        numRounds={props.numRounds}
+        numTiles={props.numTiles}
+      />
     </div>
-  )
+  );
 }
 
-export default ImageGrid
+export default ImageGrid;
