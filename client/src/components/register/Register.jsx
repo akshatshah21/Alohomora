@@ -1,7 +1,13 @@
-import React from "react";
+import React, { Fragment } from "react";
+import { ImageGrid } from "../imageGrid";
 
 function Register() {
-  return <div>Register</div>;
+  return (
+    <Fragment>
+      <div>Register</div>
+      <ImageGrid></ImageGrid>
+    </Fragment>
+  );
 }
 
 export default Register;
