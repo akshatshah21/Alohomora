@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("../model/User.js");
-const decryptImage = require('../utils/decryption')
+const decryptImage = require("../utils/decryption");
 
 require("dotenv").config();
 const NUM_IMAGES_PER_SET = process.env.NUM_IMAGES_PER_SET;
@@ -25,6 +25,12 @@ module.exports = (unsplash) => {
   // @desc login user
   // @access Public
   router.post("/", (req, res) => {
+    /*
+    email
+    interationNum
+    passwordHash
+    key
+    */
     const email = req.body.email;
     User.findOne({ email: email }).then((user) => {
       if (user) {
@@ -43,7 +49,7 @@ module.exports = (unsplash) => {
           const encryptedImage = user.images[iterationNum - 1];
 
           let imageCount = NUM_IMAGES_PER_SET;
-          let imageUrl = decryptImage(encryptedImage,key);
+          let imageUrl = decryptImage(encryptedImage, key);
           fetch(imageUrl)
             .then(() => {
               imageCount -= 1;

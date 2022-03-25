@@ -22,6 +22,12 @@ module.exports = (unsplash) => {
   // @route POST api/register
   // @desc Register user
   // @access Public
+  /*
+  name
+  email
+  images (list of a,b,c,d)
+  passwordHash
+  */
   router.post("/", (req, res) => {
     const userData = req.body;
     User.findOne({ email: userData.email })
