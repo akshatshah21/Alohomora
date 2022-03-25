@@ -51,29 +51,29 @@ module.exports = (unsplash) => {
               }
               imageLinks.push(userData.images[0]);
               shuffleArray(imageLinks);
+              console.log(imageLinks);
+              const newUser = new User({
+                name: userData.name,
+                email: userData.email,
+                firstSet: imageLinks,
+                images: userData.images.slice(1, userData.images.length),
+                passwordHash: userData.passwordHash,
+              });
+              newUser
+                .save()
+                .then(() => {
+                  console.log("new user saved");
+                  res.status(200).json({ msg: "registeration successful" });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  res.status(500).json({ msg: "couldn't save new user" });
+                });
             } else {
               res
                 .status(500)
                 .json({ msg: "couldn't get images from unsplash" });
             }
-            console.log(imageLinks);
-            const newUser = new User({
-              name: userData.name,
-              email: userData.email,
-              firstSet: imageLinks,
-              images: userData.images.slice(1, userData.images.length),
-              passwordHash: userData.passwordHash,
-            });
-            newUser
-              .save()
-              .then(() => {
-                console.log("new user saved");
-                res.status(200).json({ msg: "registeration successful" });
-              })
-              .catch((err) => {
-                console.log(err);
-                res.status(500).json({ msg: "couldn't save new user" });
-              });
           });
       })
       .catch((error) => {
