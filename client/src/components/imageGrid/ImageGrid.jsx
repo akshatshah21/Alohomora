@@ -2,9 +2,12 @@ import React from 'react';
 import Grid from './Grid';
 
 function ImageGrid(props) {
-  const images = []
-  const thumbnailSide = 256; 
-  console.log(props.thumbnails)
+  const images = [];
+  const thumbnailSide = 256;
+
+  const handleSubmit = () => {
+    
+  }
 
   for(let i=0; i< props.imageURLs.length; i++) {
     images.push({

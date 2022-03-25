@@ -81,7 +81,7 @@ function Register() {
           </div>
         </form>
       </div>
-      <ImageGrid imageURLs={rawImages} thumbnails={thumbnails}></ImageGrid>
+      <ImageGrid imageURLs={rawImages} thumbnails={thumbnails} />
     </Fragment>
   );
 }

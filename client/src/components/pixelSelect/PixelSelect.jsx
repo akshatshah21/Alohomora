@@ -10,11 +10,15 @@ function PixelSelect({ imageURL, dimension, selectionResolution, submitSequence 
     const selectedTile = document.getElementById(e.target.id);
     const selectedTileId = e.target.id;
     if(selectedTiles.current.includes(selectedTileId)) {
-      console.log("off");
-      selectedTile.style.border = "";
-      selectedTiles.current = selectedTiles.current.filter(id => id !== selectedTileId);
+      // selectedTile.classList.remove("border-2")
+      // selectedTile.classList.remove("border-red-500");
+      // selectedTiles.current = selectedTiles.current.filter(id => id !== selectedTileId);
+
+      // Don't allow deselect, it messes up the sequence
+      return;
     } else {
-      selectedTile.style.border = "2px solid red";
+      selectedTile.classList.add("border-2");
+      selectedTile.classList.add("border-red-500");
       selectedTiles.current.push(selectedTileId);
     }
   }
@@ -48,8 +52,8 @@ function PixelSelect({ imageURL, dimension, selectionResolution, submitSequence 
   }, [imageURL, dimension, selectionResolution]);
 
   return (
-    <div className="md:w-1/4 mx-auto">
-      <div id="selection-grid" className="grid grid-cols-5 gap-x-0 gap-y-2"></div>
+    <div className="mx-auto">
+      <div id="selection-grid" className="grid grid-cols-5 gap-x-1 gap-y-2"></div>
       <button className="btn" onClick={() => {
         console.log(selectedTiles);
         submitSequence(selectedTiles);
