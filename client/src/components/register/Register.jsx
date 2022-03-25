@@ -9,26 +9,26 @@ const unsplash = createApi({
   fetch: fetch,
 });
 
-const NUM_TILES = 3;
-const NUM_ROUNDS = 3;
+const NUM_TILES = 1;
+const NUM_ROUNDS = 2;
 
 function hashImage(image, ref_point) {
-  const str = image + ref_point.join()
-  return CryptoJS.SHA256(str).toString(CryptoJS.enc.base64)
-};
+  const str = image + ref_point.join();
+  return CryptoJS.SHA256(str).toString(CryptoJS.enc.base64);
+}
 
 function encryptImage(image, key) {
   return CryptoJS.AES.encrypt(image, key).toString();
-};
-
+}
 
 function Register() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [category, setCategory] = useState();
   const [rawImages, setRawImages] = useState([]);
   const [thumbnails, setThumbnails] = useState([]);
   const [sequences, setSequences] = useState([]);
   const [roundNumber, setRoundNumber] = useState(0);
-  const [firstRoundImages, setFirstRoundImages] = useState([]);
 
   const getImages = async () => {
     let fullImages = [];
@@ -44,16 +44,13 @@ function Register() {
 
       const pictures = result.response;
       pictures.results.forEach((pic) => {
-        fullImages.push(`${pic.urls.full}&crop=faces&fit=crop&h=250&w=250}`);
+        fullImages.push(`${pic.urls.full}&crop=faces&fit=crop&h=250&w=250`);
         thumbnails.push(`${pic.urls.thumb}&crop=faces&fit=crop&h=250&w=250`);
       });
 
       setRawImages(fullImages);
       setThumbnails(thumbnails);
 
-      if(roundNumber === 0) {
-        setFirstRoundImages(fullImages);
-      }
     } catch (err) {
       console.error(err.message);
     }
@@ -67,48 +64,75 @@ function Register() {
         tileSequence: tileSequence,
       },
     ]);
-    setRoundNumber(prev => prev + 1);
+    setRoundNumber((prev) => prev + 1);
     setCategory("");
     setRawImages([]);
     setThumbnails([]);
   };
 
-  const register = async() => {
+  const register = async () => {
     const hashes = [];
-    sequences.map(imageSelection =>{
+    sequences.map((imageSelection) => {
       hashes.push(hashImage(imageSelection.image, imageSelection.tileSequence));
     });
 
     const encryptedImages = [];
 
-    for(let i=1; i<NUM_ROUNDS; i++) {
-      encryptedImages.push(encryptImage(sequences[i].image, hashes[i-1]));
+    for (let i = 1; i < NUM_ROUNDS; i++) {
+      encryptedImages.push(encryptImage(sequences[i].image, hashes[i - 1]));
     }
 
-    const passwordHash = CryptoJS.SHA256(hashes.join()).toString(CryptoJS.enc.base64);
+    const passwordHash = CryptoJS.SHA256(hashes.join()).toString(
+      CryptoJS.enc.base64
+    );
 
     axios.post("/register", {
+      name,
+      email,
       passwordHash,
-      encryptedImages,
-      firstRoundImages
+      images: [sequences[0].image, ...encryptedImages],
     });
-  }
+  };
 
   return (
     <Fragment>
       <div className="mx-auto my-2 font-light flex justify-center text-center">
         <form className="bg-white pt-6 w-2/3 flex justify-center">
           <div className="mb-4">
-            <label className="text-gray-700 mb-2 text-lg" htmlFor="username">
-              Username
+            <label
+              className="text-gray-700 mb-2 text-lg"
+              htmlFor="name"
+            >
+              Name
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="username"
+              id="name"
+              name="name"
               type="text"
-              placeholder="Username"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
+          <div className="mb-4">
+            <label
+              className="text-gray-700 mb-2 text-lg"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+            />
+          </div>
+
           <div className="mb-6">
             <label className="text-gray-700 mb-2 text-lg" htmlFor="category">
               Category for image
@@ -135,7 +159,9 @@ function Register() {
       {roundNumber === NUM_ROUNDS ? (
         <div className="flex flex-col">
           <p className="mx-auto text-3xl my-2">Woo-hoo! You're almost there!</p>
-          <button className="btn btn-sm btn-primary mx-auto" onClick={register}>Confirm registration</button>
+          <button className="btn btn-sm btn-primary mx-auto" onClick={register}>
+            Confirm registration
+          </button>
         </div>
       ) : (
         <ImageGrid

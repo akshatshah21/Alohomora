@@ -41,10 +41,10 @@ module.exports = (unsplash) => {
             count: NUM_IMAGES_PER_SET - 1,
           })
           .then((result) => {
-            if (result.type == "success") {
+            console.log(result.type);
+            if (result.type === "success") {
               const images = result.response;
               for (let i = 0; i < NUM_IMAGES_PER_SET - 1; i++) {
-                console.log(images);
                 let newLink = images[i].urls.raw;
                 newLink += "&crop=faces&fit=crop&h=250&w=250";
                 imageLinks.push(newLink);
@@ -56,23 +56,24 @@ module.exports = (unsplash) => {
                 .status(500)
                 .json({ msg: "couldn't get images from unsplash" });
             }
-          });
-        const newUser = new User({
-          name: userData.name,
-          email: userData.email,
-          firstSet: imageLinks,
-          images: userData.images.slice(1, userData.images.length),
-          passwordHash: userData.passwordHash,
-        });
-        newUser
-          .save()
-          .then(() => {
-            console.log("new user saved");
-            res.status(200).json({ msg: "registeration successful" });
-          })
-          .catch((err) => {
-            console.log(err);
-            res.status(500).json({ msg: "couldn't save new user" });
+            console.log(imageLinks);
+            const newUser = new User({
+              name: userData.name,
+              email: userData.email,
+              firstSet: imageLinks,
+              images: userData.images.slice(1, userData.images.length),
+              passwordHash: userData.passwordHash,
+            });
+            newUser
+              .save()
+              .then(() => {
+                console.log("new user saved");
+                res.status(200).json({ msg: "registeration successful" });
+              })
+              .catch((err) => {
+                console.log(err);
+                res.status(500).json({ msg: "couldn't save new user" });
+              });
           });
       })
       .catch((error) => {
