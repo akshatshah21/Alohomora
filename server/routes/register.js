@@ -33,7 +33,7 @@ module.exports = (unsplash) => {
     User.findOne({ email: userData.email })
       .then((user) => {
         if (user) {
-          res.status(200).json({ msg: "user already exists" });
+          return res.status(200).json({ msg: "user already exists" });
         }
         let imageLinks = [];
         unsplash.photos
@@ -49,6 +49,9 @@ module.exports = (unsplash) => {
                 newLink += "&crop=faces&fit=crop&h=250&w=250";
                 imageLinks.push(newLink);
               }
+
+              console.log("userdata", userData);
+
               imageLinks.push(userData.images[0]);
               shuffleArray(imageLinks);
               console.log(imageLinks);
@@ -63,14 +66,14 @@ module.exports = (unsplash) => {
                 .save()
                 .then(() => {
                   console.log("new user saved");
-                  res.status(200).json({ msg: "registeration successful" });
+                  return res.status(200).json({ msg: "registeration successful" });
                 })
                 .catch((err) => {
                   console.log(err);
-                  res.status(500).json({ msg: "couldn't save new user" });
+                  return res.status(500).json({ msg: "couldn't save new user" });
                 });
             } else {
-              res
+              return res
                 .status(500)
                 .json({ msg: "couldn't get images from unsplash" });
             }

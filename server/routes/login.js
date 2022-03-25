@@ -5,8 +5,8 @@ const User = require("../model/User.js");
 const decryptImage = require("../utils/decryption");
 
 require("dotenv").config();
-const NUM_IMAGES_PER_SET = process.env.NUM_IMAGES_PER_SET;
-const totalIterations = process.env.TOTAL_ITERATIONS;
+const NUM_IMAGES_PER_SET = Number(process.env.NUM_IMAGES_PER_SET);
+const TOTAL_ITERATIONS = Number(process.env.TOTAL_ITERATIONS);
 
 const shuffleArray = (array) => {
   for (var i = array.length - 1; i > 0; i--) {
@@ -27,28 +27,31 @@ module.exports = (unsplash) => {
   router.post("/", (req, res) => {
     /*
     email
-    interationNum
+    iterationNum
     passwordHash
     key
     */
     const email = req.body.email;
     User.findOne({ email: email }).then((user) => {
       if (user) {
-        const iterationNum = req.body.interationNum;
+        const iterationNum = req.body.iterationNum;
+        console.log(iterationNum);
         if (iterationNum === 0) {
-          res.status(200).json({ images: user.firstSet });
-        } else if (iterationNum === totalIterations) {
+          return res.status(200).json({ images: user.firstSet });
+        } else if (iterationNum === TOTAL_ITERATIONS) {
           const passwordHash = req.body.passwordHash;
           if (passwordHash === user.passwordHash) {
-            res.status(200).json({ msg: "login successfull" });
+            return res.status(200).json({ msg: "login successfull" });
           } else {
-            res.status(200).json({ msg: "login unsuccessfull" });
+            return res.status(200).json({ msg: "login unsuccessfull" });
           }
         } else {
           const key = req.body.key;
           const encryptedImage = user.images[iterationNum - 1];
 
           let imageCount = NUM_IMAGES_PER_SET;
+          console.log("key", key);
+          console.log("image", encryptedImage);
           let imageUrl = decryptImage(encryptedImage, key);
           fetch(imageUrl)
             .then(() => {
@@ -72,17 +75,18 @@ module.exports = (unsplash) => {
                   newLink += "&crop=faces&fit=crop&h=250&w=250";
                   imageLinks.push(newLink);
                 }
+                if(imageCount===NUM_IMAGES_PER_SET-1) imageLinks.push(imageUrl);
                 shuffleArray(imageLinks);
-                res.status(200).json({ images: imageLinks });
+                return res.status(200).json({ images: imageLinks });
               } else {
-                res
+                return res
                   .status(500)
                   .json({ msg: "couldn't get images from unsplash" });
               }
             });
         }
       } else {
-        res.status(200).json({ msg: "user does not exists" });
+        return res.status(200).json({ msg: "user does not exists" });
       }
     });
   });

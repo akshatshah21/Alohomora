@@ -3,6 +3,7 @@ import { ImageGrid } from "../imageGrid";
 import { createApi } from "unsplash-js";
 import CryptoJS from "crypto-js";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const unsplash = createApi({
   accessKey: process.env.REACT_APP_UNSPLASH_ACCESS_KEY,
@@ -10,7 +11,7 @@ const unsplash = createApi({
 });
 
 const NUM_TILES = 1;
-const NUM_ROUNDS = 2;
+const NUM_ROUNDS = 4;
 
 function hashImage(image, ref_point) {
   const str = image + ref_point.join();
@@ -88,12 +89,29 @@ function Register() {
       CryptoJS.enc.base64
     );
 
-    axios.post("/register", {
-      name,
-      email,
-      passwordHash,
-      images: [sequences[0].image, ...encryptedImages],
-    });
+    try {
+      let res = await axios.post("/register", {
+        name,
+        email,
+        passwordHash,
+        images: [sequences[0].image, ...encryptedImages],
+      });
+
+      if(res.status == 200) {
+        console.log("Registration successful");
+        toast.success('Registration successful!', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          });
+      }
+    } catch (error) {
+      
+    }
   };
 
   return (
