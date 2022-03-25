@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("../model/User.js");
+const decryptImage = require('../utils/decryption')
 
 require("dotenv").config();
 const NUM_IMAGES_PER_SET = process.env.NUM_IMAGES_PER_SET;
@@ -41,10 +42,8 @@ module.exports = (unsplash) => {
           const key = req.body.key;
           const encryptedImage = user.images[iterationNum - 1];
 
-          let imageUrl =
-            "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?ixid=MnwzMXMzMTl8MHwxfHNlYXJjaHwxfHxjYXR8ZW58MHwxfHx8MTY0ODIwMjM2OA&ixlib=rb-1.2.1&crop=faces&fit=crop&h=250&w=250";
           let imageCount = NUM_IMAGES_PER_SET;
-          //let imageUrl = decryptImage(encryptedImage,key);
+          let imageUrl = decryptImage(encryptedImage,key);
           fetch(imageUrl)
             .then(() => {
               imageCount -= 1;
