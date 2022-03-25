@@ -5,6 +5,7 @@ import CryptoJS from "crypto-js";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { navigate } from "@reach/router";
+import Canvas from "../canvas/Canvas";
 
 const unsplash = createApi({
   accessKey: process.env.REACT_APP_UNSPLASH_ACCESS_KEY,
@@ -32,6 +33,8 @@ function Register() {
   const [sequences, setSequences] = useState([]);
   const [roundNumber, setRoundNumber] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [isHuman, setIsHuman] = useState(false);
 
   const getImages = async () => {
     setIsLoading(true);
@@ -127,6 +130,12 @@ function Register() {
 
   return (
     <Fragment>
+      <Canvas modalIsOpen={showCaptcha} setIsOpen={setShowCaptcha} onResult={(captchaResult) => {
+        if(captchaResult) {
+          setIsHuman(true);
+        }
+        setShowCaptcha(false);
+      }} />
       <div className="mx-auto my-2 font-light flex justify-center text-center">
         <form className="bg-white pt-6 w-2/3 flex justify-center">
           <div className="mb-4 mr-2">
@@ -174,7 +183,12 @@ function Register() {
             <button
               className="mx-2 btn btn-sm btn-secondary py-2 px-4"
               type="button"
-              onClick={() => getImages()}
+              onClick={() => {
+                if(roundNumber === 0 && !isHuman) {
+                  setShowCaptcha(true);
+                }
+                getImages()
+              }}
             >
               Search
             </button>

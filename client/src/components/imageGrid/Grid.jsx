@@ -62,7 +62,7 @@ const Grid = (props) => {
                   layoutId={index}
                   htmlFor="my-modal"
                   className="modal-button"
-                  src={img.thumbnail}
+                  src={`${img.thumbnail}&t=${Date.now()}`}
                   onClick={() => {
                     setShowModal(true);
                     setCurrentImage(img.src);

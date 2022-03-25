@@ -4,8 +4,6 @@ import Modal from 'react-modal';
 import { createWorker } from "tesseract.js"
 import { Buffer } from 'buffer';
 
-
-
 const customStyles = {
   content: {
     top: '50%',
@@ -16,8 +14,8 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
   },
 };
-function Canvas() {
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+function Canvas({ modalIsOpen, setIsOpen, onResult  }) {
+  // const [modalIsOpen, setIsOpen] = React.useState(isOpen);
   const canvasRef = useRef(null);
   const rand = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
   const handleSubmit = async () => {
@@ -34,10 +32,12 @@ function Canvas() {
     console.log("text",text)
     console.log("rand",rand)
     if(rand==text){
-      console.log("Success")
+      console.log("Success");
+      onResult(true);
     }
     else{
       console.log("failure")
+      onResult(false);
     }
 
     closeModal()
@@ -52,7 +52,7 @@ function Canvas() {
 
   return (
     <>
-      <button onClick={openModal}>Open Modal</button>
+      {/* <button onClick={openModal}>Open Modal</button> */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

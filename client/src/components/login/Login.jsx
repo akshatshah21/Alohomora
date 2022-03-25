@@ -4,6 +4,7 @@ import { ImageGrid } from "../imageGrid";
 import CryptoJS from "crypto-js";
 import { toast } from "react-toastify";
 import { navigate } from "@reach/router";
+import Canvas from "../canvas/Canvas";
 
 const NUM_TILES = 1;
 const NUM_ROUNDS = 4;
@@ -17,8 +18,9 @@ function Login() {
   const [email, setEmail] = useState();
   const [roundNumber, setRoundNumber] = useState(0);
   const [images, setImages] = useState([]);
-  // const [sequences, setSequences] = useState([])
   const sequences = useRef([]);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [isHuman, setIsHuman] = useState(false);
 
   const handleSubmit = async () => {
     console.log(roundNumber);
@@ -132,6 +134,16 @@ function Login() {
 
   return (
     <div>
+      <Canvas
+        modalIsOpen={showCaptcha}
+        setIsOpen={setShowCaptcha}
+        onResult={(captchaResult) => {
+          if (captchaResult) {
+            setIsHuman(true);
+          }
+          setShowCaptcha(false);
+        }}
+      />
       <div className="m-8 font-light flex justify-center text-center">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-xs">
           <div className="mb-4">
@@ -151,7 +163,13 @@ function Login() {
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="button"
-              onClick={() => handleSubmit()}
+              onClick={() => {
+                if (roundNumber === 0 && !isHuman) {
+                  setShowCaptcha(true);
+                } else {
+                  handleSubmit();
+                }
+              }}
             >
               {roundNumber < NUM_ROUNDS ? "Next" : "Login"}
             </button>
