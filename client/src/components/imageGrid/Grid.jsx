@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { PixelSelect } from "../pixelSelect";
 import { ArrowRight, XCircle } from "react-feather";
+import { motion } from "framer-motion";
 
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -43,7 +44,7 @@ const Grid = (props) => {
   return (
     <>
       <div className="flex flex-col">
-        <div className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-4">
+        <div className="md:mx-auto md:w-2/3 grid grid-cols-2 lg:grid-cols-3">
           {props.images.map((img) => (
             <div key={img.id} className="">
               {props.isLoading ? (
@@ -56,7 +57,7 @@ const Grid = (props) => {
                   <Skeleton count={5} wrapper={Box1} />
                 </SkeletonTheme>
               ) : (
-                <img
+                <motion.img
                   htmlFor="my-modal"
                   className="modal-button"
                   src={img.thumbnail}
@@ -64,6 +65,12 @@ const Grid = (props) => {
                     setShowModal(true);
                     setCurrentImage(img.src);
                   }}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 0.75 }}
+                  transition={{
+                    duration: 1,
+                  }}
+                  whileHover={{ scale: 1 }}
                 />
               )}
             </div>
