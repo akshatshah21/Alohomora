@@ -3,6 +3,9 @@ import torch
 import requests
 from PIL import Image
 from transformers import ViTFeatureExtractor, AutoTokenizer, VisionEncoderDecoderModel
+import spacy
+from collections import Counter
+from string import punctuation
 
 
 loc = "ydshieh/vit-gpt2-coco-en"
@@ -12,6 +15,7 @@ tokenizer = AutoTokenizer.from_pretrained(loc)
 model = VisionEncoderDecoderModel.from_pretrained(loc)
 model.eval()
 
+nlp = spacy.load("en_core_web_sm")
 
 def predict(image):
 
@@ -37,18 +41,41 @@ app = Flask(__name__)
 # The route() function of the Flask class is a decorator, 
 # which tells the application which URL should call 
 # the associated function.
-@app.route('/img_captioning/<img_url>')
+@app.route('/img_captioning')
 # ‘/’ URL is bound with hello_world() function.
-def hello_world(img_url):
+def hello_world():
     # img_url = request.args.get('url')
-    print(img_url)
+    args = request.args.to_dict()
 
-    # with Image.open(requests.get(img_url, stream=True).raw) as image:
-    #     preds = predict(image)
+    with Image.open(requests.get(args['img_url'], stream=True).raw) as image:
+        preds = predict(image)
+    
+    
 
     return jsonify(
-        preds="preds",
+        preds=preds,
     )
+
+
+@app.route('/get_keywords')
+# ‘/’ URL is bound with hello_world() function.
+def get_hotwords():
+
+    text = request.args.to_dict()['text']
+    
+    result = []
+    pos_tag = ['PROPN', 'ADJ', 'NOUN'] # 1
+    doc = nlp(text.lower()) # 2
+    for token in doc:
+        # 3
+        if(token.text in nlp.Defaults.stop_words or token.text in punctuation):
+            continue
+        # 4
+        if(token.pos_ in pos_tag):
+            result.append(token.text)
+
+    return {'words' : result} # 5
+
 
 # main driver function
 if __name__ == '__main__':
