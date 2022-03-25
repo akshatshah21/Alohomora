@@ -9,9 +9,6 @@ const Grid = (props) => {
   return (
     <>
       <div className="flex flex-col">
-        <button className="btn btn-sm btn-primary mx-auto mb-4">
-          Next <ArrowRight />
-        </button>
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-4">
           {props.images.map((img) => (
             <div key={img.id}>
