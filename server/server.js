@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const register = require("./routes/register.js");
 
 require("dotenv").config();
-const DBURL = process.env.DBURL;
+const DBURL = process.env.MONGODB_URL;
 const PORT = process.env.PORT;
 
 //creating express app
