@@ -6,7 +6,7 @@ function PixelSelect({
   selectionResolution,
   submitSequence,
   numTiles,
-  closeModal
+  closeModal,
 }) {
   const selectedTiles = useRef([]);
 
@@ -49,7 +49,7 @@ function PixelSelect({
           const ctx = canvas.getContext("2d");
 
           ctx.drawImage(image, x, y, 100, 100, 0, 0, 100, 100);
-
+          console.log(row, col);
           gridContainer.appendChild(canvas);
         }
       }

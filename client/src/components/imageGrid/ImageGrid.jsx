@@ -22,6 +22,7 @@ function ImageGrid(props) {
         addImageAndTileSequence={props.addImageAndTileSequence}
         numRounds={props.numRounds}
         numTiles={props.numTiles}
+        isLoading={props.isLoading}
       />
     </div>
   );

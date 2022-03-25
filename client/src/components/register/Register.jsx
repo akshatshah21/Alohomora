@@ -29,8 +29,10 @@ function Register() {
   const [thumbnails, setThumbnails] = useState([]);
   const [sequences, setSequences] = useState([]);
   const [roundNumber, setRoundNumber] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getImages = async () => {
+    setIsLoading(true);
     let fullImages = [];
     let thumbnails = [];
 
@@ -48,9 +50,9 @@ function Register() {
         thumbnails.push(`${pic.urls.thumb}&crop=faces&fit=crop&h=250&w=250`);
       });
 
+      setIsLoading(false);
       setRawImages(fullImages);
       setThumbnails(thumbnails);
-
     } catch (err) {
       console.error(err.message);
     }
@@ -99,10 +101,7 @@ function Register() {
       <div className="mx-auto my-2 font-light flex justify-center text-center">
         <form className="bg-white pt-6 w-2/3 flex justify-center">
           <div className="mb-4">
-            <label
-              className="text-gray-700 mb-2 text-lg"
-              htmlFor="name"
-            >
+            <label className="text-gray-700 mb-2 text-lg" htmlFor="name">
               Name
             </label>
             <input
@@ -116,10 +115,7 @@ function Register() {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="text-gray-700 mb-2 text-lg"
-              htmlFor="email"
-            >
+            <label className="text-gray-700 mb-2 text-lg" htmlFor="email">
               Email
             </label>
             <input
@@ -170,6 +166,7 @@ function Register() {
           addImageAndTileSequence={addImageAndTileSequence}
           numRounds={NUM_ROUNDS}
           numTiles={NUM_TILES}
+          isLoading={isLoading}
         />
       )}
     </Fragment>
