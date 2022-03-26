@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { navigate } from "@reach/router";
 import Canvas from "../canvas/Canvas";
 
-const NUM_TILES = 1;
+const NUM_TILES = 2;
 const NUM_ROUNDS = 4;
 
 function hashImage(image, ref_point) {
