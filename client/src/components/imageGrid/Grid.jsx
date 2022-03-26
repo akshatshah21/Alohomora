@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { PixelSelect } from "../pixelSelect";
-import { ArrowRight, XCircle } from "react-feather";
+import { XCircle } from "react-feather";
 import { AnimatePresence, motion } from "framer-motion";
 
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
@@ -61,7 +61,7 @@ const Grid = (props) => {
                 <motion.img
                   layoutId={index}
                   htmlFor="my-modal"
-                  className="modal-button"
+                  className="modal-button rounded-2xl"
                   src={`${img.thumbnail}&t=${Date.now()}`}
                   onClick={() => {
                     setShowModal(true);

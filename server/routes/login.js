@@ -39,11 +39,14 @@ module.exports = (unsplash) => {
         if (iterationNum === 0) {
           return res.status(200).json({ images: user.firstSet });
         } else if (iterationNum === TOTAL_ITERATIONS) {
+
+          console.log("lastr");
+
           const passwordHash = req.body.passwordHash;
           if (passwordHash === user.passwordHash) {
-            return res.status(200).json({ msg: "login successfull" });
+            return res.status(200).json({ msg: "login successful" });
           } else {
-            return res.status(200).json({ msg: "login unsuccessfull" });
+            return res.status(401).json({ msg: "login unsuccessful" });
           }
         } else {
           const key = req.body.key;
@@ -52,7 +55,13 @@ module.exports = (unsplash) => {
           let imageCount = NUM_IMAGES_PER_SET;
           console.log("key", key);
           console.log("image", encryptedImage);
-          let imageUrl = decryptImage(encryptedImage, key);
+          let imageUrl = "";
+          try {
+            imageUrl = decryptImage(encryptedImage, key);
+          } catch (error) {
+            imageUrl = encryptedImage;
+            console.log("couldn't decrypt");
+          }
           fetch(imageUrl)
             .then(() => {
               imageCount -= 1;
@@ -75,7 +84,8 @@ module.exports = (unsplash) => {
                   newLink += "&crop=faces&fit=crop&h=250&w=250";
                   imageLinks.push(newLink);
                 }
-                if(imageCount===NUM_IMAGES_PER_SET-1) imageLinks.push(imageUrl);
+                if (imageCount === NUM_IMAGES_PER_SET - 1)
+                  imageLinks.push(imageUrl);
                 shuffleArray(imageLinks);
                 return res.status(200).json({ images: imageLinks });
               } else {
@@ -86,7 +96,7 @@ module.exports = (unsplash) => {
             });
         }
       } else {
-        return res.status(200).json({ msg: "user does not exists" });
+        return res.status(404).json({ msg: "user does not exists" });
       }
     });
   });

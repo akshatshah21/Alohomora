@@ -27,7 +27,7 @@ function encryptImage(image, key) {
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [category, setCategory] = useState();
+  const [category, setCategory] = useState("");
   const [rawImages, setRawImages] = useState([]);
   const [thumbnails, setThumbnails] = useState([]);
   const [sequences, setSequences] = useState([]);
@@ -37,6 +37,18 @@ function Register() {
   const [isHuman, setIsHuman] = useState(false);
 
   const getImages = async () => {
+    if (category.trim() === "") {
+      toast.info("Please enter a category", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
     setIsLoading(true);
     let fullImages = [];
     let thumbnails = [];
@@ -105,14 +117,14 @@ function Register() {
     );
 
     try {
-      let res = await axios.post("/register", {
+      const res = await axios.post("/register", {
         name,
         email,
         passwordHash,
         images: [sequences[0].image, ...encryptedImages],
       });
 
-      if (res.status == 200) {
+      if (res.status === 200) {
         console.log("Registration successful");
         toast.success("Registration successful!", {
           position: "bottom-right",
@@ -125,19 +137,58 @@ function Register() {
         });
         navigate("/login");
       }
-    } catch (error) {}
+    } catch (error) {
+      if (error.reponse.status === 500) {
+        toast.error("An error occured", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error("Invalid login", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        sequences.current = [];
+        setRoundNumber(0);
+      }
+    }
   };
 
   return (
     <Fragment>
-      <Canvas modalIsOpen={showCaptcha} setIsOpen={setShowCaptcha} onResult={(captchaResult) => {
-        if(captchaResult) {
-          setIsHuman(true);
-        }
-        setShowCaptcha(false);
-      }} />
+      <Canvas
+        modalIsOpen={showCaptcha}
+        setIsOpen={setShowCaptcha}
+        onResult={(captchaResult) => {
+          if (captchaResult) {
+            setIsHuman(true);
+            getImages();
+          } else {
+            toast.warning("Are you human? Please try again", {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
+          setShowCaptcha(false);
+        }}
+      />
       <div className="mx-auto my-2 font-light flex justify-center text-center">
-        <form className="bg-white pt-6 w-2/3 flex justify-center">
+        <form className="bg-white pt-6 w-2/3 flex md:flex-row flex-col justify-center">
           <div className="mb-4 mr-2">
             <label className="text-gray-700 mb-2 text-lg" htmlFor="name">
               Name
@@ -184,10 +235,11 @@ function Register() {
               className="mx-2 btn btn-sm btn-secondary py-2 px-4"
               type="button"
               onClick={() => {
-                if(roundNumber === 0 && !isHuman) {
+                if (roundNumber === 0 && !isHuman) {
                   setShowCaptcha(true);
+                } else {
+                  getImages();
                 }
-                getImages()
               }}
             >
               Search

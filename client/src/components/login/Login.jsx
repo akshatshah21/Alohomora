@@ -15,7 +15,7 @@ function hashImage(image, ref_point) {
 }
 
 function Login() {
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState("");
   const [roundNumber, setRoundNumber] = useState(0);
   const [images, setImages] = useState([]);
   const sequences = useRef([]);
@@ -41,6 +41,7 @@ function Login() {
 
         if (res.status === 200) {
           setImages(res.data.images);
+          setRoundNumber((prev) => prev + 1);
         }
       } catch (err) {
         console.error(err);
@@ -66,6 +67,7 @@ function Login() {
 
         if (res.status === 200) {
           setImages(res.data.images);
+          setRoundNumber((prev) => prev + 1);
         }
       } catch (err) {
         console.error(err);
@@ -73,7 +75,7 @@ function Login() {
     }
 
     // last round
-    else {
+    else if (roundNumber === NUM_ROUNDS) {
       console.log("last r");
       const hashes = [];
       console.log(sequences.current.length);
@@ -88,7 +90,6 @@ function Login() {
       );
 
       const currentSequence = sequences.current[sequences.current.length - 1];
-      console.log(currentSequence);
       try {
         const res = await axios.post(
           "http://localhost:4000/api/login",
@@ -103,7 +104,7 @@ function Login() {
 
         if (res.status === 200) {
           console.log("success!!");
-          toast.success('Logged in successfully!', {
+          toast.success("Logged in successfully!", {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -111,15 +112,39 @@ function Login() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            });
-            navigate("/authenticated");
+          });
+          navigate("/authenticated");
         }
       } catch (err) {
         console.error(err);
+        if (err.response.status === 401) {
+          toast.error("Invalid login", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          setRoundNumber(0);
+          setIsHuman(false);
+          setImages([]);
+          sequences.current = [];
+        } else {
+          toast.error("Server error", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          })
+        }
       }
     }
 
-    setRoundNumber((prev) => prev + 1);
   };
 
   const addImageAndTileSequence = (image, tileSequence) => {
@@ -140,6 +165,17 @@ function Login() {
         onResult={(captchaResult) => {
           if (captchaResult) {
             setIsHuman(true);
+            handleSubmit();
+          } else {
+            toast.warning("Are you human? Please try again", {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
           }
           setShowCaptcha(false);
         }}
@@ -160,19 +196,18 @@ function Login() {
             />
           </div>
           <div className="flex items-center justify-center">
-            <button
+
+            {roundNumber === 0 && <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-light py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="button"
               onClick={() => {
                 if (roundNumber === 0 && !isHuman) {
                   setShowCaptcha(true);
-                } else {
-                  handleSubmit();
                 }
               }}
             >
-              {roundNumber < NUM_ROUNDS ? "Next" : "Login"}
-            </button>
+              Login
+            </button>}
           </div>
         </form>
       </div>
