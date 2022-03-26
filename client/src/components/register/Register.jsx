@@ -13,7 +13,7 @@ const unsplash = createApi({
   fetch: fetch,
 });
 
-const NUM_TILES = 1;
+const NUM_TILES = 2;
 const NUM_ROUNDS = 4;
 
 function hashImage(image, ref_point) {
