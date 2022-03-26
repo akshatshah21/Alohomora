@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { navigate } from "@reach/router";
 import Canvas from "../canvas/Canvas";
+import imageCaption from "./Story";
 
 const unsplash = createApi({
   accessKey: process.env.REACT_APP_UNSPLASH_ACCESS_KEY,
@@ -102,66 +103,72 @@ function Register() {
       });
     }
     const hashes = [];
+    let captions = [];
     sequences.map((imageSelection) => {
+      captions.push(imageCaption(imageSelection.image));
       hashes.push(hashImage(imageSelection.image, imageSelection.tileSequence));
     });
 
-    const encryptedImages = [];
+    Promise.all(captions).then(async(values) => {
+      console.log(values);
+      const encryptedImages = [];
 
-    for (let i = 1; i < NUM_ROUNDS; i++) {
-      encryptedImages.push(encryptImage(sequences[i].image, hashes[i - 1]));
-    }
-
-    const passwordHash = CryptoJS.SHA256(hashes.join()).toString(
-      CryptoJS.enc.base64
-    );
-
-    try {
-      const res = await axios.post("/register", {
-        name,
-        email,
-        passwordHash,
-        images: [sequences[0].image, ...encryptedImages],
-      });
-
-      if (res.status === 200) {
-        console.log("Registration successful");
-        toast.success("Registration successful!", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        navigate("/login");
+      for (let i = 1; i < NUM_ROUNDS; i++) {
+        encryptedImages.push(encryptImage(sequences[i].image, hashes[i - 1]));
       }
-    } catch (error) {
-      if (error.reponse.status === 500) {
-        toast.error("An error occured", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
+
+      const passwordHash = CryptoJS.SHA256(hashes.join()).toString(
+        CryptoJS.enc.base64
+      );
+
+      try {
+        const res = await axios.post("/register", {
+          name,
+          email,
+          passwordHash,
+          images: [sequences[0].image, ...encryptedImages],
         });
-      } else {
-        toast.error("Invalid login", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        sequences.current = [];
-        setRoundNumber(0);
+
+        if (res.status === 200) {
+          console.log("Registration successful");
+          toast.success("Registration successful!", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          navigate("/login");
+        }
+      } catch (error) {
+        if (error.reponse.status === 500) {
+          toast.error("An error occured", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else {
+          toast.error("Invalid login", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          sequences.current = [];
+          setRoundNumber(0);
+        }
       }
-    }
+    })
+
   };
 
   return (
