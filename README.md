@@ -4,6 +4,8 @@
 Harry Potter themed (not really) Graphical Password Authentication  
 **[Flowchart and Architecture](https://whimsical.com/getting-started-boards-LARZb8hL94L9b6R1s1JPb2)**
 
+![password strength](assets/password_strength.png)
+
 ## Team members
 * Arnav Shah - asshah_b18@it.vjti.ac.in
 * Akshat Shah - shahakshat2000@gmail.com
