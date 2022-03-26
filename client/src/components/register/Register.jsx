@@ -111,6 +111,11 @@ function Register() {
 
     Promise.all(captions).then(async(values) => {
       console.log(values);
+      let captionList = [];
+      for(let i=0; i<values.length;i++){
+        captionList.push(values[i].text);
+      }
+
       const encryptedImages = [];
 
       for (let i = 1; i < NUM_ROUNDS; i++) {
@@ -127,6 +132,7 @@ function Register() {
           email,
           passwordHash,
           images: [sequences[0].image, ...encryptedImages],
+          captions : captionList,
         });
 
         if (res.status === 200) {

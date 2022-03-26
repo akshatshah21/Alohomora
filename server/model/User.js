@@ -16,6 +16,9 @@ const UserSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  captions: {
+    type: [String]
+  },
   passwordHash: {
     type: String,
     required: true,

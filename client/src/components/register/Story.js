@@ -25,7 +25,7 @@ const imageCaption = async (imageUrl) => {
 
               words = response.words;
               for (var i = 0; i < words.length; i++) {
-                text = text.replace(words[i], "_");
+                text = text.replace(words[i], "_______");
               }
               console.log(text);
               resolve({ text: text });

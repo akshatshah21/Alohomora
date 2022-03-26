@@ -37,10 +37,10 @@ module.exports = (unsplash) => {
         const iterationNum = req.body.iterationNum;
         console.log(iterationNum);
         if (iterationNum === 0) {
-          return res.status(200).json({ images: user.firstSet });
+          return res.status(200).json({ images: user.firstSet, caption: user.captions[0] });
         } else if (iterationNum === TOTAL_ITERATIONS) {
 
-          console.log("lastr");
+          console.log("last");
 
           const passwordHash = req.body.passwordHash;
           if (passwordHash === user.passwordHash) {
@@ -51,6 +51,7 @@ module.exports = (unsplash) => {
         } else {
           const key = req.body.key;
           const encryptedImage = user.images[iterationNum - 1];
+          const caption = user.captions[iterationNum]
 
           let imageCount = NUM_IMAGES_PER_SET;
           console.log("key", key);
@@ -87,7 +88,7 @@ module.exports = (unsplash) => {
                 if (imageCount === NUM_IMAGES_PER_SET - 1)
                   imageLinks.push(imageUrl);
                 shuffleArray(imageLinks);
-                return res.status(200).json({ images: imageLinks });
+                return res.status(200).json({ images: imageLinks, caption: caption });
               } else {
                 return res
                   .status(500)

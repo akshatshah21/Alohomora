@@ -16,6 +16,7 @@ function hashImage(image, ref_point) {
 
 function Login() {
   const [email, setEmail] = useState("");
+  const [ imageCaption , setImageCaption ] = useState("");
   const [roundNumber, setRoundNumber] = useState(0);
   const [images, setImages] = useState([]);
   const sequences = useRef([]);
@@ -41,6 +42,7 @@ function Login() {
 
         if (res.status === 200) {
           setImages(res.data.images);
+          setImageCaption(res.data.caption)
           setRoundNumber((prev) => prev + 1);
         }
       } catch (err) {
@@ -66,6 +68,7 @@ function Login() {
         );
 
         if (res.status === 200) {
+          setImageCaption(res.data.caption);
           setImages(res.data.images);
           setRoundNumber((prev) => prev + 1);
         }
@@ -195,6 +198,7 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+          
           <div className="flex items-center justify-center">
 
             {roundNumber === 0 && <button
@@ -211,6 +215,9 @@ function Login() {
           </div>
         </form>
       </div>
+      <div>
+            <p className="text-center ">{imageCaption}</p>
+          </div>
       <ImageGrid
         imageURLs={images}
         thumbnails={images}

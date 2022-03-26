@@ -60,11 +60,13 @@ module.exports = (unsplash) => {
                 email: userData.email,
                 firstSet: imageLinks,
                 images: userData.images.slice(1, userData.images.length),
+                captions: userData.captions,
                 passwordHash: userData.passwordHash,
               });
               newUser
                 .save()
                 .then(() => {
+                  console.log(userData.captions);
                   console.log("new user saved");
                   return res.status(200).json({ msg: "registeration successful" });
                 })
