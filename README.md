@@ -86,7 +86,7 @@ authentication over that provided by textual passwords. They are immune to the c
 
 ## Screenshots
 
-![register](assets/register)
-![grid_selection](assets/grid_selection)
-![login_round1](assets/login_round1)
-![graphical captcha](assets/graphical_captcha)
+![register](assets/register.jpeg)
+![grid_selection](assets/grid_selection.jpeg)
+![login_round1](assets/login_round1.jpeg)
+![graphical captcha](assets/graphical_captcha.jpeg)
