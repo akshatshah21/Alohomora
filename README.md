@@ -1,4 +1,4 @@
-# Grpahical Password Authentication
+# Graphical Password Authentication
 
 # Alohomora
 
@@ -9,12 +9,12 @@ Harry Potter themed (not really) Graphical Password Authentication
 
 ## Team members
 
-- Arnav Shah - asshah_b18@it.vjti.ac.in
-- Akshat Shah - shahakshat2000@gmail.com
-- Crehan Santhumayor - crehanas14@gmail.com
-- Devanshi Shah - devanshi1500@gmail.com
-- Ganadhish Acharekar - acharekarganadhish1999@gmail.com
-- Saharsh Jain - saharshjain2000@gmail.com
+- Arnav Shah 
+- Akshat Shah
+- Crehan Santhumayor
+- Devanshi Shah 
+- Ganadhish Acharekar 
+- Saharsh Jain
 
 ## Description
 
