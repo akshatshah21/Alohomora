@@ -27,6 +27,9 @@ function Canvas({ modalIsOpen, setIsOpen, onResult  }) {
     await worker.load();
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
+    await worker.setParameters({
+      tessedit_char_whitelist: '0123456789',
+    });
     const { data: { text } } = await worker.recognize(imageBuffer);
     await worker.terminate();
     console.log("text",text)
