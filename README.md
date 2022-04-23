@@ -5,6 +5,13 @@
 Harry Potter themed (not really) Graphical Password Authentication  
 **[Flowchart and Architecture](https://whimsical.com/getting-started-boards-LARZb8hL94L9b6R1s1JPb2)**
 
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=eSp9Xog5kAU" >
+    <img src="https://img.youtube.com/vi/eSp9Xog5kAU/0.jpg" width=640 height=480 alt="Video Demo" />
+  </a>
+  <h3>Solution Demo</h3>
+</div>
+
 ![password strength](assets/password_strength.png)
 
 ## Team members
